@@ -1,0 +1,28 @@
+name: Setup Firebase
+description: Setup Firebase
+inputs:
+  gcp_sa_key_prod:
+    description: GCP Service Account Key for PROD
+    required: true
+  gcp_sa_key_dev:
+    description: GCP Service Account Key for DEV
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Set environment variables
+      shell: bash
+      run: |
+        mkdir -p ./functions/lib/cli
+        if [[ '${{ github.ref_name }}' == 'main' ]]; then
+          echo "FLAVOR=prod" >> $GITHUB_ENV
+          echo "GCP_SA_KEY=${{ inputs.gcp_sa_key_prod }}" >> $GITHUB_ENV
+        else
+          echo "FLAVOR=dev" >> $GITHUB_ENV
+          echo "GCP_SA_KEY=${{ inputs.gcp_sa_key_dev }}" >> $GITHUB_ENV
+        fi
+
+    - name: Display environment variables
+      shell: bash
+      run: |
+        echo "FLAVOR = ${{ env.FLAVOR }}"
