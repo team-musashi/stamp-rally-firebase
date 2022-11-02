@@ -6,7 +6,6 @@ on:
     branches:
       - develop
       - main
-      - feature/1-basic
 
 jobs:
   # どのサービスをデプロイするかを確認する
