@@ -1,9 +1,22 @@
 # Compiled JavaScript files
 lib/**/*.js
 lib/**/*.js.map
+lib/**/*.json
 
 # TypeScript v1 declaration files
 typings/
 
 # Node.js dependency directory
 node_modules/
+
+# keys and settings
+keys/
+lib/keys
+settings/
+lib/settings
+
+# Secret Manager
+.secret.local
+
+# Emulator data
+data/

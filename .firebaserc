@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "flutteruniv-stamp-rally-dev"
+    "default": "flutteruniv-stamp-rally-dev",
+    "dev": "flutteruniv-stamp-rally-dev",
+    "prod": "flutteruniv-stamp-rally-prod"
   }
 }

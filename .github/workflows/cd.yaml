@@ -1,0 +1,174 @@
+name: CD
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  # どのサービスをデプロイするかを確認する
+  changes:
+    name: Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      storage: ${{ steps.filter.outputs.storage }}
+      firestore: ${{ steps.filter.outputs.firestore }}
+      functions: ${{ steps.filter.outputs.functions }}
+    steps:
+      # ソースコードをチェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # 変更を検出する
+      - name: Detect changes
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            storage:
+              - 'storage.*'
+            firestore:
+              - 'firestore.*'
+            functions:
+              - 'functions/**'
+
+  # Firease Storage にデプロイ
+  deploy_storage:
+    name: Deploy Storage
+    needs:
+      - changes
+    if: ${{ needs.changes.outputs.storage == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # ソースコードをチェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # Firebase のセットアップ
+      - name: Setup Firebase
+        uses: ./.github/actions/setup_firebase
+        with:
+          gcp_sa_key_prod: ${{ secrets.STAMP_RALLY_GCP_SA_KEY_PROD }}
+          gcp_sa_key_dev: ${{ secrets.STAMP_RALLY_GCP_SA_KEY_DEV }}
+
+      # Frebase Storage にデプロイ
+      - name: Deploy to Storage
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only storage --project=${{ env.FLAVOR }}
+
+  # Firebase Firestore にデプロイ
+  deploy_firestore:
+    name: Deploy Firestore
+    needs:
+      - changes
+    if: ${{ needs.changes.outputs.firestore == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # ソースコードをチェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # Firebase のセットアップ
+      - name: Setup Firebase
+        uses: ./.github/actions/setup_firebase
+        with:
+          gcp_sa_key_prod: ${{ secrets.STAMP_RALLY_GCP_SA_KEY_PROD }}
+          gcp_sa_key_dev: ${{ secrets.STAMP_RALLY_GCP_SA_KEY_DEV }}
+
+      # Frebase Firestore にデプロイ
+      - name: Deploy to Firestore
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only firestore --project=${{ env.FLAVOR }}
+
+  # Firebase Functions にデプロイ
+  deploy_functions:
+    name: Deploy Functions
+    needs:
+      - changes
+    if: ${{ needs.changes.outputs.functions == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # ソースコードをチェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # Firebase のセットアップ
+      - name: Setup Firebase
+        uses: ./.github/actions/setup_firebase
+        with:
+          gcp_sa_key_prod: ${{ secrets.STAMP_RALLY_GCP_SA_KEY_PROD }}
+          gcp_sa_key_dev: ${{ secrets.STAMP_RALLY_GCP_SA_KEY_DEV }}
+
+      # node のセットアップ
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      # ライブラリのインストール
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./functions
+
+      # Frebase Functions にデプロイ
+      - name: Deploy to Functions
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions --force --project=${{ env.FLAVOR }}
+
+  notify_slack:
+    name: Notify slack
+    needs:
+      - changes
+      - deploy_storage
+      - deploy_firestore
+      - deploy_functions
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    env:
+      SLACK_USERNAME: Firebase
+      SLACK_ICON: https://user-images.githubusercontent.com/13707135/178207377-cde3c7f5-761d-48c8-8855-3a838427badb.png
+      SLACK_WEBHOOK: ${{ secrets.STAMP_RALLY_SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Notify Success
+        if: ${{ !contains(needs.*.result, 'failure') }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: Success deploy to Firebase !
+          SLACK_COLOR: good
+
+      - name: Notify Failure Changes
+        if: ${{ needs.changes.result == 'failure' }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: FAILURE CHANGES ...
+          SLACK_COLOR: danger
+
+      - name: Notify Failure for Storage
+        if: ${{ needs.deploy_storage.result == 'failure' }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: Failure deploy to Firebase Storage ...
+          SLACK_COLOR: danger
+
+      - name: Notify Failure for Firestore
+        if: ${{ needs.deploy_firestore.result == 'failure' }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: Failure deploy to Firebase Firestore ...
+          SLACK_COLOR: danger
+
+      - name: Notify Failure for Functions
+        if: ${{ needs.deploy_functions.result == 'failure' }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: Failure deploy to Firebase Functions ...
+          SLACK_COLOR: danger
