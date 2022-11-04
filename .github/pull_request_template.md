@@ -1,6 +1,6 @@
-# 関連 Issue
+# 関連する Issue
 
-- closes #0
+- #0
 
 # やったこと
 

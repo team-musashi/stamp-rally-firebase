@@ -1,6 +1,6 @@
 ---
 name: バグ報告
-about: バグ報告
+about: バグを報告するときに使用してください
 title: ""
 labels: bug
 assignees: ""
@@ -15,3 +15,5 @@ assignees: ""
 ### 実際動作
 
 ### 期待動作
+
+## 関連する Issue（任意）
