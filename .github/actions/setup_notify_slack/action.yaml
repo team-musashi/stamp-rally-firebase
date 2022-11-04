@@ -1,0 +1,14 @@
+name: Setup Notify Slack
+description: Setup Notify Slack
+runs:
+  using: composite
+  steps:
+    - name: Set environment variables
+      shell: bash
+      run: |
+        mkdir -p ./functions/lib/cli
+        if [[ '${{ github.ref_name }}' == 'main' ]]; then
+          echo "SLACK_USERNAME=${{ env.SLACK_USERNAME }} (prod)" >> $GITHUB_ENV
+        else
+          echo "SLACK_USERNAME=${{ env.SLACK_USERNAME }} (dev)" >> $GITHUB_ENV
+        fi
