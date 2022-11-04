@@ -124,34 +124,44 @@ jobs:
         with:
           args: deploy --only functions --force --project=${{ env.FLAVOR }}
 
-  notify_slack:
+  # Slack に結果を通知する（Storage）
+  notify_slack_storage:
     name: Notify slack
     needs:
       - changes
       - deploy_storage
-      - deploy_firestore
-      - deploy_functions
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     env:
-      SLACK_USERNAME: Firebase
+      SLACK_USERNAME: Firebase Storage
       SLACK_ICON: https://user-images.githubusercontent.com/13707135/178207377-cde3c7f5-761d-48c8-8855-3a838427badb.png
       SLACK_WEBHOOK: ${{ secrets.STAMP_RALLY_SLACK_WEBHOOK_URL }}
     steps:
+      # ソースコードをチェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # Notify のセットアップ
+      - name: Setup Notify
+        uses: ./.github/actions/setup_notify
+
+      # 成功
       - name: Notify Success
         if: ${{ !contains(needs.*.result, 'failure') }}
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_TITLE: Success deploy to Firebase !
+          SLACK_TITLE: Success deploy to Firebase Storage!
           SLACK_COLOR: good
 
+      # エラー
       - name: Notify Failure Changes
         if: ${{ needs.changes.result == 'failure' }}
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_TITLE: FAILURE CHANGES ...
+          SLACK_TITLE: Failure changes ...
           SLACK_COLOR: danger
 
+      # エラー
       - name: Notify Failure for Storage
         if: ${{ needs.deploy_storage.result == 'failure' }}
         uses: rtCamp/action-slack-notify@v2
@@ -159,6 +169,44 @@ jobs:
           SLACK_TITLE: Failure deploy to Firebase Storage ...
           SLACK_COLOR: danger
 
+  # Slack に結果を通知する（Firestore）
+  notify_slack_firestore:
+    name: Notify slack
+    needs:
+      - changes
+      - deploy_firestore
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    env:
+      SLACK_USERNAME: Firebase Firestore
+      SLACK_ICON: https://user-images.githubusercontent.com/13707135/178207377-cde3c7f5-761d-48c8-8855-3a838427badb.png
+      SLACK_WEBHOOK: ${{ secrets.STAMP_RALLY_SLACK_WEBHOOK_URL }}
+    steps:
+      # ソースコードをチェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # Notify のセットアップ
+      - name: Setup Notify
+        uses: ./.github/actions/setup_notify
+
+      # 成功
+      - name: Notify Success
+        if: ${{ !contains(needs.*.result, 'failure') }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: Success deploy to Firebase Firestore!
+          SLACK_COLOR: good
+
+      # エラー
+      - name: Notify Failure Changes
+        if: ${{ needs.changes.result == 'failure' }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: Failure changes ...
+          SLACK_COLOR: danger
+
+      # エラー
       - name: Notify Failure for Firestore
         if: ${{ needs.deploy_firestore.result == 'failure' }}
         uses: rtCamp/action-slack-notify@v2
@@ -166,6 +214,44 @@ jobs:
           SLACK_TITLE: Failure deploy to Firebase Firestore ...
           SLACK_COLOR: danger
 
+  # Slack に結果を通知する（Functions）
+  notify_slack_functions:
+    name: Notify slack
+    needs:
+      - changes
+      - deploy_functions
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    env:
+      SLACK_USERNAME: Firebase Functions
+      SLACK_ICON: https://user-images.githubusercontent.com/13707135/178207377-cde3c7f5-761d-48c8-8855-3a838427badb.png
+      SLACK_WEBHOOK: ${{ secrets.STAMP_RALLY_SLACK_WEBHOOK_URL }}
+    steps:
+      # ソースコードをチェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # Notify のセットアップ
+      - name: Setup Notify
+        uses: ./.github/actions/setup_notify
+
+      # 成功
+      - name: Notify Success
+        if: ${{ !contains(needs.*.result, 'failure') }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: Success deploy to Firebase Functions!
+          SLACK_COLOR: good
+
+      # エラー
+      - name: Notify Failure Changes
+        if: ${{ needs.changes.result == 'failure' }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: Failure changes ...
+          SLACK_COLOR: danger
+
+      # エラー
       - name: Notify Failure for Functions
         if: ${{ needs.deploy_functions.result == 'failure' }}
         uses: rtCamp/action-slack-notify@v2
