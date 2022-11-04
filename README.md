@@ -6,7 +6,7 @@
 - Firebase Firestore
 - Firebase Storage
 
-## 開発環境セットアップしよう
+## 開発環境をセットアップしよう
 
 開発マシンの OS は Mac、IDE は VSCode の利用を前提としています。
 Functions で TypeScript を実装するときは、次の VSCode 拡張機能をインストールしてください。
@@ -49,7 +49,7 @@ https://firebase.google.com/docs/functions/config-env#managing_secrets
 | -------- | -------- |
 | まだない | まだない |
 
-## アーキテクチャとフォルダ構成
+## フォルダ構成
 
 DI コンテナは [InversifyJS](https://github.com/inversify/InversifyJS) を利用しています。
 
@@ -60,7 +60,7 @@ DI コンテナは [InversifyJS](https://github.com/inversify/InversifyJS) を�
 │       ├── entity                           コレクション単位のエンティティ
 │       └── <collection>Repository.ts        コレクションリポジトリ
 ├── functinos                                公開関数
-│   └── <kinds>                              関数種別
+│   └── <関数の種別>                           pubsub や Collection 名
 │       └── <function-name>.ts               公開関数（関数毎にファイルを分ける）
 └── service                                  外部APIなど
     └── <service>                            各サービス毎のディレクトリ
