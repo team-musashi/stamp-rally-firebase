@@ -6,6 +6,7 @@ on:
     branches:
       - develop
       - main
+      - feature/1-fix-2
 
 jobs:
   # どのサービスをデプロイするかを確認する
@@ -130,7 +131,7 @@ jobs:
     needs:
       - changes
       - deploy_storage
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && needs.changes.outputs.storage == 'true' }}
     runs-on: ubuntu-latest
     env:
       SLACK_USERNAME: Firebase Storage
@@ -141,9 +142,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      # Notify のセットアップ
-      - name: Setup Notify
-        uses: ./.github/actions/setup_notify
+      # Slack 通知のセットアップ
+      - name: Setup Notify Slack
+        uses: ./.github/actions/setup_notify_slack
 
       # 成功
       - name: Notify Success
@@ -175,7 +176,7 @@ jobs:
     needs:
       - changes
       - deploy_firestore
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && needs.changes.outputs.firestore == 'true' }}
     runs-on: ubuntu-latest
     env:
       SLACK_USERNAME: Firebase Firestore
@@ -186,9 +187,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      # Notify のセットアップ
-      - name: Setup Notify
-        uses: ./.github/actions/setup_notify
+      # Slack 通知のセットアップ
+      - name: Setup Notify Slack
+        uses: ./.github/actions/setup_notify_slack
 
       # 成功
       - name: Notify Success
@@ -220,7 +221,7 @@ jobs:
     needs:
       - changes
       - deploy_functions
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && needs.changes.outputs.functions == 'true' }}
     runs-on: ubuntu-latest
     env:
       SLACK_USERNAME: Firebase Functions
@@ -231,9 +232,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      # Notify のセットアップ
-      - name: Setup Notify
-        uses: ./.github/actions/setup_notify
+      # Slack 通知のセットアップ
+      - name: Setup Notify Slack
+        uses: ./.github/actions/setup_notify_slack
 
       # 成功
       - name: Notify Success
