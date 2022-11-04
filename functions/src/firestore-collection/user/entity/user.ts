@@ -10,12 +10,12 @@ export class User {
   /**
    * 認証プロバイダー
    */
-  provider?: AuthProvider
+  authProvider?: AuthProvider
 
   /**
    * 作成時のプラットフォーム
    */
-  createdPlatform?: AppPlatform
+  platform?: AppPlatform
 
   /**
    * 作成日時

@@ -15,7 +15,7 @@ export const onCreateAuthUser = functions
     const input = new User({
       uid: user.uid,
       /** 匿名ユーザー固定、今後認証プロバイダーを追加したら変更が必要です  */
-      provider: `anonymous`,
+      authProvider: `anonymous`,
     })
 
     const userRepository = container.get<UserRepository>(providers.userRepository)
