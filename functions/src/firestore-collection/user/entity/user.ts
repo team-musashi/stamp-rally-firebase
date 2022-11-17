@@ -40,4 +40,4 @@ export type AuthProvider = `anonymous`
 /**
  * アプリのプラットフォーム
  */
-export type AppPlatform = `android` | `ios`
+export type AppPlatform = `android` | `iOS`
