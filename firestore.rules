@@ -17,7 +17,7 @@ service cloud.firestore {
       allow update: if isOwner(uid);
       allow delete: if false;
 
-      // あるユーザが参加中のスタンプラリー
+      // 参加中スタンプラリー
       match /entryStampRally/{entryStampRallyId} {
         // ログインユーザ = 自分自身なら参加中のスタンプラリーを取得
         // getもlistも同じ条件となるはずなのでreadにした
@@ -28,13 +28,13 @@ service cloud.firestore {
         allow update: if isOwner(uid);
         allow delete: if isOwner(uid);
 
-        // あるユーザが参加中のスタンプラリーの場所
+        // 参加中のスタンプラリーの場所
         match /spot/{spotId} {
         // ログインユーザ = 自分自身なら参加中のスタンプラリーの場所を取得
         // getもlistも同じ条件となるはずなのでreadにした
         allow read: if isOwner(uid);
 
-        // ログインユーザ = 自分自身なら参加中スタンプラリーの場所を更新
+        // ログインユーザ = 自分自身なら参加中スタンプラリーの場所を更新（スタンプを取得した時間を入れるイメージ）
         allow create: if false;   //ユーザが参加中のスタンプラリーの場所を追加することはできない
         allow update: if isOwner(uid);
         allow delete: if false;   // ユーザが参加中のスタンプラリーの場所を削除することはできない
@@ -44,7 +44,7 @@ service cloud.firestore {
 
     // 公開中スタンプラリー
     match /publicStampRally/{publicStampRallyId} {
-      // 誰でも公開中スタンプラリーは見て良さそう
+      // 誰でも公開中スタンプラリーは見て良い
       allow read: if true;
       
       // ログインユーザ = 自分自身ならスタンプラリーを作成してもよい
