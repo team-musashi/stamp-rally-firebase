@@ -58,5 +58,6 @@ service cloud.firestore {
         // ログインユーザ = 自分自身なら場所を作成してもよい
         allow create: if isOwner(uid);
       }
+    }
   }
 }
