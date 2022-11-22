@@ -20,43 +20,47 @@ service cloud.firestore {
       // 参加中スタンプラリー
       match /entryStampRally/{entryStampRallyId} {
         // ログインユーザ = 自分自身なら参加中のスタンプラリーを取得
-        // getもlistも同じ条件となるはずなのでreadにした
-        allow read: if isOwner(uid);
+        allow get: if isOwner(uid);
+        allow list: if isOwner(uid);
 
         // ログインユーザ = 自分自身なら参加中スタンプラリーを作成/更新/削除してよい
         allow create: if isOwner(uid);
         allow update: if isOwner(uid);
         allow delete: if isOwner(uid);
 
-        // 参加中のスタンプラリーの場所
+        // 参加中のスタンプラリーのスポット
         match /spot/{spotId} {
-        // ログインユーザ = 自分自身なら参加中のスタンプラリーの場所を取得
-        // getもlistも同じ条件となるはずなのでreadにした
-        allow read: if isOwner(uid);
+          // ログインユーザ = 自分自身なら参加中のスタンプラリーのスポットを取得
+          allow get: if isOwner(uid);
+          allow list: if isOwner(uid);
 
-        // ログインユーザ = 自分自身なら参加中スタンプラリーの場所を更新（スタンプを取得した時間を入れるイメージ）
-        allow create: if false;   //ユーザが参加中のスタンプラリーの場所を追加することはできない
-        allow update: if isOwner(uid);
-        allow delete: if false;   // ユーザが参加中のスタンプラリーの場所を削除することはできない
+          // ログインユーザ = 自分自身なら参加中スタンプラリーのスポットを更新（スタンプを取得した時間を入れるイメージ）
+          allow create: if false;
+          allow update: if isOwner(uid);
+          allow delete: if false;
         }
       }
     }
 
     // 公開中スタンプラリー
     match /publicStampRally/{publicStampRallyId} {
-      // 誰でも公開中スタンプラリーは見て良い
-      allow read: if true;
+      allow get: if hasAuth();
+      allow list: if hasAuth();
       
-      // ログインユーザ = 自分自身ならスタンプラリーを作成してもよい
-      allow create: if isOwner(uid);
+      // 作成できるのは運営のみ
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
 
-      // 公開中スタンプラリーの場所
+      // 公開中スタンプラリーのスポット
       match /spot/{spotId} {
-        // 誰もで見て良さそう
-        allow read: if true;
+        allow get: if hasAuth();
+        allow list: if hasAuth();
 
-        // ログインユーザ = 自分自身なら場所を作成してもよい
-        allow create: if isOwner(uid);
+        // 作成できるのは運営のみ
+        allow create: if false;
+        allow update: if false;
+        allow delete: if false;
       }
     }
   }
