@@ -63,5 +63,16 @@ service cloud.firestore {
         allow delete: if false;
       }
     }
+
+    // イベント
+    match /event/{eventId} {
+      // 取得できるのはFunctions内でのみ
+      allow get: if false;
+      allow list: if false;
+
+      allow create: if hasAuth();
+      allow update: if false;
+      allow delete: if false;
+    }
   }
 }
