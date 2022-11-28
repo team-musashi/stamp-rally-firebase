@@ -70,7 +70,7 @@ service cloud.firestore {
       allow get: if false;
       allow list: if false;
 
-      allow create: if hasAuth();
+      allow create: if isOwner(request.resource.data.uid);
       allow update: if false;
       allow delete: if false;
     }
