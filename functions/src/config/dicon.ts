@@ -4,9 +4,12 @@ import { Firestore } from 'firebase-admin/firestore'
 import * as admin from 'firebase-admin'
 import { User } from '../firestore-collection/user/entity/user'
 import { Event } from '../firestore-collection/event/entity/event'
+import { StampRally } from '../firestore-collection/stamp-rally/entity/stampRally'
 import { userConverter } from '../firestore-collection/user/userConverter'
-import { UserRepository } from '../firestore-collection/user/userRepository'
 import { eventConverter } from '../firestore-collection/event/eventConverter'
+import { stampRallyConverter } from '../firestore-collection/stamp-rally/stampRallyConverter'
+import { UserRepository } from '../firestore-collection/user/userRepository'
+import { StampRallyRepository } from '../firestore-collection/stamp-rally/stampRallyRepository'
 
 /**
  * DI コンテナー
@@ -34,6 +37,12 @@ export const providers = {
    */
   eventRef: Symbol.for(`eventRef`),
   eventRepository: Symbol.for(`eventRepository`),
+
+  /**
+   * StampRally
+   */
+  stampRallyRef: Symbol.for(`stampRallyRef`),
+  stampRallyRepository: Symbol.for(`stampRallyRepository`),
 }
 
 /**************************************************************************
@@ -75,3 +84,15 @@ container
     return db.collection(`event`).withConverter<Event>(eventConverter)
   })
   .inSingletonScope()
+
+/**
+ * StampRally
+ */
+container
+  .bind<FirebaseFirestore.CollectionReference<StampRally>>(providers.stampRallyRef)
+  .toDynamicValue((context) => {
+    const db = context.container.get<Firestore>(providers.firestoreDb)
+    return db.collection(`stampRally`).withConverter<StampRally>(stampRallyConverter)
+  })
+  .inSingletonScope()
+container.bind<StampRallyRepository>(providers.stampRallyRepository).to(StampRallyRepository)
