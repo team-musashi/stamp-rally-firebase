@@ -3,8 +3,10 @@ import { Container } from 'inversify/lib/container/container'
 import { Firestore } from 'firebase-admin/firestore'
 import * as admin from 'firebase-admin'
 import { User } from '../firestore-collection/user/entity/user'
+import { Event } from '../firestore-collection/event/entity/event'
 import { userConverter } from '../firestore-collection/user/userConverter'
 import { UserRepository } from '../firestore-collection/user/userRepository'
+import { eventConverter } from '../firestore-collection/event/eventConverter'
 
 /**
  * DI コンテナー
@@ -26,6 +28,12 @@ export const providers = {
    */
   userRef: Symbol.for(`userRef`),
   userRepository: Symbol.for(`userRepository`),
+
+  /**
+   * Event
+   */
+  eventRef: Symbol.for(`eventRef`),
+  eventRepository: Symbol.for(`eventRepository`),
 }
 
 /**************************************************************************
@@ -56,3 +64,14 @@ container
   })
   .inSingletonScope()
 container.bind<UserRepository>(providers.userRepository).to(UserRepository)
+
+/**
+ * Event
+ */
+container
+  .bind<FirebaseFirestore.CollectionReference<Event>>(providers.eventRef)
+  .toDynamicValue((context) => {
+    const db = context.container.get<Firestore>(providers.firestoreDb)
+    return db.collection(`event`).withConverter<Event>(eventConverter)
+  })
+  .inSingletonScope()
