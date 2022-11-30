@@ -64,8 +64,8 @@ service cloud.firestore {
       }
     }
 
-    // イベント
-    match /event/{eventId} {
+    // コマンド
+    match /command/{commandId} {
       // 取得できるのはFunctions内でのみ
       allow get: if false;
       allow list: if false;
