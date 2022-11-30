@@ -3,10 +3,10 @@ import { Container } from 'inversify/lib/container/container'
 import { Firestore } from 'firebase-admin/firestore'
 import * as admin from 'firebase-admin'
 import { User } from '../firestore-collection/user/entity/user'
-import { Event } from '../firestore-collection/event/entity/event'
+import { Command } from '../firestore-collection/command/entity/command'
 import { StampRally } from '../firestore-collection/stamp-rally/entity/stampRally'
 import { userConverter } from '../firestore-collection/user/userConverter'
-import { eventConverter } from '../firestore-collection/event/eventConverter'
+import { commandConverter } from '../firestore-collection/command/commandConverter'
 import { stampRallyConverter } from '../firestore-collection/stamp-rally/stampRallyConverter'
 import { UserRepository } from '../firestore-collection/user/userRepository'
 import { StampRallyRepository } from '../firestore-collection/stamp-rally/stampRallyRepository'
@@ -33,10 +33,10 @@ export const providers = {
   userRepository: Symbol.for(`userRepository`),
 
   /**
-   * Event
+   * Command
    */
-  eventRef: Symbol.for(`eventRef`),
-  eventRepository: Symbol.for(`eventRepository`),
+  commandRef: Symbol.for(`commandRef`),
+  commandRepository: Symbol.for(`commandRepository`),
 
   /**
    * StampRally
@@ -75,13 +75,13 @@ container
 container.bind<UserRepository>(providers.userRepository).to(UserRepository)
 
 /**
- * Event
+ * Command
  */
 container
-  .bind<FirebaseFirestore.CollectionReference<Event>>(providers.eventRef)
+  .bind<FirebaseFirestore.CollectionReference<Command>>(providers.commandRef)
   .toDynamicValue((context) => {
     const db = context.container.get<Firestore>(providers.firestoreDb)
-    return db.collection(`event`).withConverter<Event>(eventConverter)
+    return db.collection(`command`).withConverter<Command>(commandConverter)
   })
   .inSingletonScope()
 

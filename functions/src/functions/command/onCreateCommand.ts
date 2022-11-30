@@ -5,9 +5,9 @@ import { StampRallyRepository } from '../../firestore-collection/stamp-rally/sta
 import { container, providers } from '~/src/config/dicon'
 import { UserRepository } from '~/src/firestore-collection/user/userRepository'
 
-export const onCreateEvent = functions
+export const onCreateCommand = functions
   .region(constants.region)
-  .firestore.document(`/event/{eventId}`)
+  .firestore.document(`/command/{commandId}`)
   .onCreate(async (snapshot, _) => {
     const stampRallyId: string = snapshot.data()[`data`].value
     functions.logger.info(`スタンプラリーIDを取得しました: id = ${stampRallyId}`)

@@ -1,16 +1,16 @@
 /**
- * イベント
+ * コマンド
  */
-export class Event {
+export class Command {
   /**
    * ユーザーID
    */
   uid = ``
 
   /**
-   * イベントタイプ
+   * コマンドタイプ
    */
-  eventType = ``
+  commandType = ``
 
   /**
    * データ
@@ -25,7 +25,7 @@ export class Event {
   /**
    * コンストラクタ
    */
-  constructor(partial?: Partial<Event>) {
+  constructor(partial?: Partial<Command>) {
     Object.assign(this, partial)
   }
 }
