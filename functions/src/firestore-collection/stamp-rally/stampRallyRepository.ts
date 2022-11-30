@@ -23,4 +23,20 @@ export class StampRallyRepository {
   async add({ inputKey, inputValue }: { inputKey: string; inputValue: StampRally }): Promise<void> {
     await this.collectionRef.doc(inputKey).set(inputValue)
   }
+
+  /**
+   * ドキュメントID指定でスタンプラリーを取得する
+   */
+  async get({ inputKey }: { inputKey: string }): Promise<StampRally> {
+    const data = await (await this.collectionRef.doc(inputKey).get()).data
+    return {
+      title: data()!.title,
+      explanation: data()!.explanation,
+      place: data()!.place,
+      requiredTime: data()!.requiredTime,
+      imageUrl: data()!.imageUrl,
+      startDate: data()!.startDate,
+      endDate: data()!.endDate,
+    }
+  }
 }

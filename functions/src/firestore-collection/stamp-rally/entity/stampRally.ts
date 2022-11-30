@@ -30,7 +30,7 @@ export class StampRally {
   /**
    * 期間開始日
    */
-  startDate: Date = new Date()
+  startDate?: Date
 
   /**
    * 期間終了日
