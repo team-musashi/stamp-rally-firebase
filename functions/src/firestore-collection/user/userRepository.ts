@@ -5,6 +5,7 @@ import { User } from './entity/user'
 import { providers } from '../../config/dicon'
 import * as dayjs from 'dayjs'
 import { StampRally } from '../stamp-rally/entity/stampRally'
+import { Spot } from '../stamp-rally/entity/spot'
 
 /**
  * ユーザーリポジトリ
@@ -28,9 +29,23 @@ export class UserRepository {
   }
 
   /**
-   * ユーザー配下に参加中スタンプラリーを追加する
+   * ユーザー配下に参加中スタンプラリー/スポットを追加する
    */
-  async addEntryStampRally({ inputKey, inputValue }: { inputKey: string; inputValue: StampRally }): Promise<void> {
-    await this.collectionRef.doc(inputKey).collection(`entryStampRally`).add(inputValue)
+  async addEntryStampRally({
+    inputKey,
+    inputValue1,
+    inputValue2,
+  }: {
+    inputKey: string
+    inputValue1: StampRally
+    inputValue2: Spot[]
+  }): Promise<void> {
+    const documentReference = await this.collectionRef.doc(inputKey).collection(`entryStampRally`).add(inputValue1)
+    await this.collectionRef
+      .doc(inputKey)
+      .collection(`entryStampRally`)
+      .doc(documentReference.id)
+      .collection(`spot`)
+      .add(inputValue2)
   }
 }

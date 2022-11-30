@@ -3,6 +3,8 @@ import { inject, injectable, LazyServiceIdentifer } from 'inversify'
 import { CollectionReference } from 'firebase-admin/firestore'
 import { StampRally } from '../stamp-rally/entity/stampRally'
 import { providers } from '../../config/dicon'
+import { Spot } from './entity/spot'
+import { spotConverter } from './spotConverter'
 
 /**
  * スタンプラリーリポジトリ
@@ -27,7 +29,7 @@ export class StampRallyRepository {
   /**
    * ドキュメントID指定でスタンプラリーを取得する
    */
-  async get({ inputKey }: { inputKey: string }): Promise<StampRally> {
+  async getStampRally({ inputKey }: { inputKey: string }): Promise<StampRally> {
     const data = await (await this.collectionRef.doc(inputKey).get()).data
     return {
       title: data()!.title,
@@ -38,5 +40,22 @@ export class StampRallyRepository {
       startDate: data()!.startDate,
       endDate: data()!.endDate,
     }
+  }
+
+  /**
+   * ドキュメントID指定でスタンプラリー配下のスポットを取得する
+   */
+  async getSpots({ inputKey }: { inputKey: string }): Promise<Spot[]> {
+    const spots: Array<Spot> = []
+    await this.collectionRef
+      .doc(inputKey)
+      .collection(`spot`)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.docs.map((doc) => {
+          spots.push(spotConverter.fromFirestore(doc))
+        })
+      })
+    return spots
   }
 }
