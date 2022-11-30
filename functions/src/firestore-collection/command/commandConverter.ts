@@ -16,7 +16,7 @@ export const commandConverter: FirestoreDataConverter<Command> = {
       uid: command.uid,
       commandType: command.commandType,
       data: command.data,
-      updatedAt: FieldValue.serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp(),
     }
   },
 }
