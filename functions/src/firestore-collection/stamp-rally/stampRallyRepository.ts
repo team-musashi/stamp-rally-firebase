@@ -27,35 +27,20 @@ export class StampRallyRepository {
   }
 
   /**
-   * ドキュメントID指定でスタンプラリーを取得する
+   * スタンプラリーを返す
    */
-  async getStampRally({ inputKey }: { inputKey: string }): Promise<StampRally> {
-    const data = await (await this.collectionRef.doc(inputKey).get()).data
-    return {
-      title: data()!.title,
-      explanation: data()!.explanation,
-      place: data()!.place,
-      requiredTime: data()!.requiredTime,
-      imageUrl: data()!.imageUrl,
-      startDate: data()!.startDate,
-      endDate: data()!.endDate,
-    }
+  async get({ id }: { id: string }): Promise<StampRally | undefined> {
+    const snapshot = await this.collectionRef.doc(id).get()
+    return snapshot.data()
   }
 
   /**
-   * ドキュメントID指定でスタンプラリー配下のスポットを取得する
+   * スタンプラリー配下のスポットリストを返す
    */
-  async getSpots({ inputKey }: { inputKey: string }): Promise<Spot[]> {
-    const spots: Array<Spot> = []
-    await this.collectionRef
-      .doc(inputKey)
-      .collection(`spot`)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.docs.map((doc) => {
-          spots.push(spotConverter.fromFirestore(doc))
-        })
-      })
-    return spots
+  async getSpots({ id }: { id: string }): Promise<Spot[]> {
+    const snapshot = await this.collectionRef.doc(id).collection(`spot`).get()
+    return snapshot.docs.map((doc) => {
+      return spotConverter.fromFirestore(doc)
+    })
   }
 }

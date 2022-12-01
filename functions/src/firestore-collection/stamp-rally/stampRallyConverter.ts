@@ -1,10 +1,11 @@
 import { StampRally } from '../stamp-rally/entity/stampRally'
-import { FirestoreDataConverter } from 'firebase-admin/firestore'
+import { FieldValue, FirestoreDataConverter } from 'firebase-admin/firestore'
 
 export const stampRallyConverter: FirestoreDataConverter<StampRally> = {
   fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): StampRally {
     const data = snapshot.data()
     return {
+      id: snapshot.id,
       title: data.title,
       explanation: data.explanation,
       place: data.place,
@@ -12,6 +13,8 @@ export const stampRallyConverter: FirestoreDataConverter<StampRally> = {
       imageUrl: data.imageUrl,
       startDate: data.startDate,
       endDate: data.endDate,
+      createdAt: data.createdAt?.toDate(),
+      updatedAt: data.updatedAt?.toDate(),
     }
   },
   toFirestore(stampRally: StampRally): FirebaseFirestore.DocumentData {
@@ -23,6 +26,8 @@ export const stampRallyConverter: FirestoreDataConverter<StampRally> = {
       imageUrl: stampRally.imageUrl,
       startDate: stampRally.startDate,
       endDate: stampRally.endDate,
+      createdAt: stampRally.createdAt ? FieldValue.serverTimestamp() : undefined,
+      updatedAt: FieldValue.serverTimestamp(),
     }
   },
 }

@@ -92,7 +92,7 @@ container
   .bind<FirebaseFirestore.CollectionReference<StampRally>>(providers.stampRallyRef)
   .toDynamicValue((context) => {
     const db = context.container.get<Firestore>(providers.firestoreDb)
-    return db.collection(`stampRally`).withConverter<StampRally>(stampRallyConverter)
+    return db.collection(`publicStampRally`).withConverter<StampRally>(stampRallyConverter)
   })
   .inSingletonScope()
 container.bind<StampRallyRepository>(providers.stampRallyRepository).to(StampRallyRepository)

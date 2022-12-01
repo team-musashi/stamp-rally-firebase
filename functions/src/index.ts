@@ -17,8 +17,9 @@ process.env.TZ = constants.timezone
  * admin.initializeApp() の順序の問題でデプロイに失敗するため
  */
 import { onCreateAuthUser } from './functions/auth-user/onCreateAuthUser'
+import { onCreateCommand } from './functions/command/onCreateCommand'
 
 /**
  * デプロイする関数一覧
  */
-export { onCreateAuthUser }
+export { onCreateAuthUser, onCreateCommand }

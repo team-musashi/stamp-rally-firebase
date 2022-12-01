@@ -3,24 +3,34 @@
  */
 export class Command {
   /**
+   * ID
+   */
+  id?: string
+
+  /**
    * ユーザーID
    */
-  uid = ``
+  uid?: string
 
   /**
    * コマンドタイプ
    */
-  commandType = ``
+  commandType?: CommandType
 
   /**
    * データ
    */
-  data: Map<string, object> = new Map()
+  data?: Map<string, unknown>
 
   /**
    * 作成日時
    */
-  createdAt: Date = new Date()
+  createdAt?: Date
+
+  /**
+   * 更新日時
+   */
+  updatedAt?: Date
 
   /**
    * コンストラクタ
@@ -29,3 +39,8 @@ export class Command {
     Object.assign(this, partial)
   }
 }
+
+/**
+ * コマンドタイプ
+ */
+export type CommandType = `entryStampRally`

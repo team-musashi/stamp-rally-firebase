@@ -6,6 +6,8 @@ import { providers } from '../../config/dicon'
 import * as dayjs from 'dayjs'
 import { StampRally } from '../stamp-rally/entity/stampRally'
 import { Spot } from '../stamp-rally/entity/spot'
+import { stampRallyConverter } from '../stamp-rally/stampRallyConverter'
+import { spotConverter } from '../stamp-rally/spotConverter'
 
 /**
  * ユーザーリポジトリ
@@ -31,21 +33,38 @@ export class UserRepository {
   /**
    * ユーザー配下に参加中スタンプラリー/スポットを追加する
    */
-  async addEntryStampRally({
-    inputKey,
-    inputValue1,
-    inputValue2,
+  async addStampRally({
+    uid,
+    stampRally,
+    spots,
   }: {
-    inputKey: string
-    inputValue1: StampRally
-    inputValue2: Spot[]
+    uid: string
+    stampRally: StampRally
+    spots: Spot[]
   }): Promise<void> {
-    const documentReference = await this.collectionRef.doc(inputKey).collection(`entryStampRally`).add(inputValue1)
-    await this.collectionRef
-      .doc(inputKey)
+    // 複数のコレクションを書き込むためトランザクションで処理する
+    const batch = this.collectionRef.firestore.batch()
+
+    // 参加中スタンプラリーのコレクション参照を取得する
+    const entryStampRallyCollectionRef = this.collectionRef
+      .doc(uid)
       .collection(`entryStampRally`)
-      .doc(documentReference.id)
-      .collection(`spot`)
-      .add(inputValue2)
+      .withConverter(stampRallyConverter)
+
+    // 参加中スタンプラリーを追加する
+    const entryStampRallyDocRef = entryStampRallyCollectionRef.doc()
+    batch.set(entryStampRallyDocRef, stampRally)
+
+    // 参加中スポットリストを追加する
+    for (const spot of spots) {
+      const entrySpotCollectionRef = entryStampRallyCollectionRef
+        .doc(entryStampRallyDocRef.id)
+        .collection(`spot`)
+        .withConverter(spotConverter)
+      batch.set(entrySpotCollectionRef.doc(), spot)
+    }
+
+    // コミット
+    await batch.commit()
   }
 }

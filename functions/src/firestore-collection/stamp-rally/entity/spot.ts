@@ -3,17 +3,22 @@
  */
 export class Spot {
   /**
-   * 順番
+   * ID
    */
-  order = -1
+  id?: string
+
+  /**
+   * スポットの順番
+   */
+  order?: number
 
   /**
    * 画像URL
    */
-  imageUrl = ``
+  imageUrl?: string
 
   /**
-   * 座標
+   * 緯度経度
    */
   location?: Geolocation
 
@@ -21,6 +26,16 @@ export class Spot {
    * スタンプ取得日
    */
   gotDate?: Date
+
+  /**
+   * 作成日時
+   */
+  createdAt?: Date
+
+  /**
+   * 更新日時
+   */
+  updatedAt?: Date
 
   /**
    * コンストラクタ

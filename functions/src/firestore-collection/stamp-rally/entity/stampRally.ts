@@ -3,39 +3,54 @@
  */
 export class StampRally {
   /**
-   * タイトル
+   * ID
    */
-  title = ``
+  id?: string
 
   /**
-   * スタンプラリー詳細
+   * スタンプラリー名称
    */
-  explanation = ``
+  title?: string
 
   /**
-   * 場所
+   * スタンプラリーの詳細説明
    */
-  place = ``
+  explanation?: string
+
+  /**
+   * 開催場所
+   */
+  place?: string
 
   /**
    * 所要時間
    */
-  requiredTime = -1
+  requiredTime?: number
 
   /**
    * 画像URL
    */
-  imageUrl = ``
+  imageUrl?: string
 
   /**
-   * 期間開始日
+   * 開催開始日
    */
   startDate?: Date
 
   /**
-   * 期間終了日
+   * 開催終了日
    */
   endDate?: Date
+
+  /**
+   * 作成日時
+   */
+  createdAt?: Date
+
+  /**
+   * 更新日時
+   */
+  updatedAt?: Date
 
   /**
    * コンストラクタ
