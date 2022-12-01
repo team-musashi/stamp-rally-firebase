@@ -1,7 +1,7 @@
 /**
- * スポット
+ * 公開スポット
  */
-export class Spot {
+export class PublicSpot {
   /**
    * ID
    */
@@ -23,11 +23,6 @@ export class Spot {
   location?: Geolocation
 
   /**
-   * スタンプ取得日
-   */
-  gotDate?: Date
-
-  /**
    * 作成日時
    */
   createdAt?: Date
@@ -40,7 +35,7 @@ export class Spot {
   /**
    * コンストラクタ
    */
-  constructor(partial?: Partial<Spot>) {
+  constructor(partial?: Partial<PublicSpot>) {
     Object.assign(this, partial)
   }
 }

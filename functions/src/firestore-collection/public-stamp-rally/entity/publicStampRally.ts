@@ -1,7 +1,7 @@
 /**
- * スタンプラリー
+ * 公開スタンプラリー
  */
-export class StampRally {
+export class PublicStampRally {
   /**
    * ID
    */
@@ -55,7 +55,7 @@ export class StampRally {
   /**
    * コンストラクタ
    */
-  constructor(partial?: Partial<StampRally>) {
+  constructor(partial?: Partial<PublicStampRally>) {
     Object.assign(this, partial)
   }
 }

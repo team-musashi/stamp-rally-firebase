@@ -4,12 +4,12 @@ import { Firestore } from 'firebase-admin/firestore'
 import * as admin from 'firebase-admin'
 import { User } from '../firestore-collection/user/entity/user'
 import { Command } from '../firestore-collection/command/entity/command'
-import { StampRally } from '../firestore-collection/stamp-rally/entity/stampRally'
+import { PublicStampRally } from '../firestore-collection/public-stamp-rally/entity/publicStampRally'
 import { userConverter } from '../firestore-collection/user/userConverter'
 import { commandConverter } from '../firestore-collection/command/commandConverter'
-import { stampRallyConverter } from '../firestore-collection/stamp-rally/stampRallyConverter'
+import { publicStampRallyConverter } from '../firestore-collection/public-stamp-rally/publicStampRallyConverter'
 import { UserRepository } from '../firestore-collection/user/userRepository'
-import { StampRallyRepository } from '../firestore-collection/stamp-rally/stampRallyRepository'
+import { PublicStampRallyRepository } from '../firestore-collection/public-stamp-rally/publicStampRallyRepository'
 
 /**
  * DI コンテナー
@@ -39,10 +39,10 @@ export const providers = {
   commandRepository: Symbol.for(`commandRepository`),
 
   /**
-   * StampRally
+   * PublicStampRally
    */
-  stampRallyRef: Symbol.for(`stampRallyRef`),
-  stampRallyRepository: Symbol.for(`stampRallyRepository`),
+  publicStampRallyRef: Symbol.for(`publicStampRallyRef`),
+  publicStampRallyRepository: Symbol.for(`publicStampRallyRepository`),
 }
 
 /**************************************************************************
@@ -86,13 +86,13 @@ container
   .inSingletonScope()
 
 /**
- * StampRally
+ * PublicStampRally
  */
 container
-  .bind<FirebaseFirestore.CollectionReference<StampRally>>(providers.stampRallyRef)
+  .bind<FirebaseFirestore.CollectionReference<PublicStampRally>>(providers.publicStampRallyRef)
   .toDynamicValue((context) => {
     const db = context.container.get<Firestore>(providers.firestoreDb)
-    return db.collection(`publicStampRally`).withConverter<StampRally>(stampRallyConverter)
+    return db.collection(`publicStampRally`).withConverter<PublicStampRally>(publicStampRallyConverter)
   })
   .inSingletonScope()
-container.bind<StampRallyRepository>(providers.stampRallyRepository).to(StampRallyRepository)
+container.bind<PublicStampRallyRepository>(providers.publicStampRallyRepository).to(PublicStampRallyRepository)

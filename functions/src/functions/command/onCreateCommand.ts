@@ -2,7 +2,7 @@ import { commandConverter } from './../../firestore-collection/command/commandCo
 import { constants } from '../../config/constants'
 import 'reflect-metadata'
 import * as functions from 'firebase-functions'
-import { StampRallyRepository } from '../../firestore-collection/stamp-rally/stampRallyRepository'
+import { PublicStampRallyRepository } from '../../firestore-collection/public-stamp-rally/publicStampRallyRepository'
 import { container, providers } from '../../config/dicon'
 import { UserRepository } from '../../firestore-collection/user/userRepository'
 import { Command } from '../../firestore-collection/command/entity/command'
@@ -49,14 +49,14 @@ const entryStampRally = async (command: Command) => {
     return
   }
 
-  // スタンプラリーとスポットリストを取得する
-  const stampRallyRepository = container.get<StampRallyRepository>(providers.stampRallyRepository)
-  const stampRally = await stampRallyRepository.get({ id: stampRallyId })
+  // 公開スタンプラリーとスポットリストを取得する
+  const publicStampRallyRepository = container.get<PublicStampRallyRepository>(providers.publicStampRallyRepository)
+  const stampRally = await publicStampRallyRepository.get({ id: stampRallyId })
   if (!stampRally) {
-    functions.logger.error(`スタンプラリーが見つかりません: id = ${stampRallyId}`)
+    functions.logger.error(`公開スタンプラリーが見つかりません: id = ${stampRallyId}`)
     return
   }
-  const spots = await stampRallyRepository.getSpots({ id: stampRallyId })
+  const spots = await publicStampRallyRepository.getSpots({ id: stampRallyId })
   if (spots.length == 0) {
     functions.logger.warn(`スポットが0件です: id = ${stampRallyId}`)
   }

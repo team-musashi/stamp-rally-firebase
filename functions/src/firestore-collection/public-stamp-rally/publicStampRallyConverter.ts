@@ -1,8 +1,8 @@
-import { StampRally } from '../stamp-rally/entity/stampRally'
+import { PublicStampRally } from './entity/publicStampRally'
 import { FieldValue, FirestoreDataConverter } from 'firebase-admin/firestore'
 
-export const stampRallyConverter: FirestoreDataConverter<StampRally> = {
-  fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): StampRally {
+export const publicStampRallyConverter: FirestoreDataConverter<PublicStampRally> = {
+  fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): PublicStampRally {
     const data = snapshot.data()
     return {
       id: snapshot.id,
@@ -17,7 +17,7 @@ export const stampRallyConverter: FirestoreDataConverter<StampRally> = {
       updatedAt: data.updatedAt?.toDate(),
     }
   },
-  toFirestore(stampRally: StampRally): FirebaseFirestore.DocumentData {
+  toFirestore(stampRally: PublicStampRally): FirebaseFirestore.DocumentData {
     return {
       title: stampRally.title,
       explanation: stampRally.explanation,

@@ -4,10 +4,10 @@ import { CollectionReference } from 'firebase-admin/firestore'
 import { User } from './entity/user'
 import { providers } from '../../config/dicon'
 import * as dayjs from 'dayjs'
-import { StampRally } from '../stamp-rally/entity/stampRally'
-import { Spot } from '../stamp-rally/entity/spot'
-import { stampRallyConverter } from '../stamp-rally/stampRallyConverter'
-import { spotConverter } from '../stamp-rally/spotConverter'
+import { PublicStampRally } from '../public-stamp-rally/entity/publicStampRally'
+import { PublicSpot } from '../public-stamp-rally/entity/publicSpot'
+import { publicStampRallyConverter } from '../public-stamp-rally/publicStampRallyConverter'
+import { spotConverter } from '../public-stamp-rally/publicSpotConverter'
 
 /**
  * ユーザーリポジトリ
@@ -39,8 +39,8 @@ export class UserRepository {
     spots,
   }: {
     uid: string
-    stampRally: StampRally
-    spots: Spot[]
+    stampRally: PublicStampRally
+    spots: PublicSpot[]
   }): Promise<void> {
     // 複数のコレクションを書き込むためトランザクションで処理する
     const batch = this.collectionRef.firestore.batch()
@@ -49,7 +49,7 @@ export class UserRepository {
     const entryStampRallyCollectionRef = this.collectionRef
       .doc(uid)
       .collection(`entryStampRally`)
-      .withConverter(stampRallyConverter)
+      .withConverter(publicStampRallyConverter)
 
     // 参加中スタンプラリーを追加する
     const entryStampRallyDocRef = entryStampRallyCollectionRef.doc()
