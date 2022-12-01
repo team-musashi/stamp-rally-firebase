@@ -4,7 +4,7 @@ import { CollectionReference } from 'firebase-admin/firestore'
 import { PublicStampRally } from './entity/publicStampRally'
 import { providers } from '../../config/dicon'
 import { PublicSpot } from './entity/publicSpot'
-import { spotConverter } from './publicSpotConverter'
+import { publicSpotConverter } from './publicSpotConverter'
 
 /**
  * 公開スタンプラリーリポジトリ
@@ -33,7 +33,7 @@ export class PublicStampRallyRepository {
   async getSpots({ id }: { id: string }): Promise<PublicSpot[]> {
     const snapshot = await this.collectionRef.doc(id).collection(`publicSpot`).get()
     return snapshot.docs.map((doc) => {
-      return spotConverter.fromFirestore(doc)
+      return publicSpotConverter.fromFirestore(doc)
     })
   }
 }

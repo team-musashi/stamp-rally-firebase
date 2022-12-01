@@ -4,10 +4,10 @@ import { CollectionReference } from 'firebase-admin/firestore'
 import { User } from './entity/user'
 import { providers } from '../../config/dicon'
 import * as dayjs from 'dayjs'
-import { PublicStampRally } from '../public-stamp-rally/entity/publicStampRally'
-import { PublicSpot } from '../public-stamp-rally/entity/publicSpot'
-import { publicStampRallyConverter } from '../public-stamp-rally/publicStampRallyConverter'
-import { spotConverter } from '../public-stamp-rally/publicSpotConverter'
+import { entryStampRallyConverter } from '../entry-stamp-rally/entryStampRallyConverter'
+import { entrySpotConverter } from '../entry-stamp-rally/entrySpotConverter'
+import { EntryStampRally } from '../entry-stamp-rally/entity/entryStampRally'
+import { EntrySpot } from '../entry-stamp-rally/entity/entrySpot'
 
 /**
  * ユーザーリポジトリ
@@ -31,16 +31,16 @@ export class UserRepository {
   }
 
   /**
-   * ユーザー配下に参加中スタンプラリー/スポットを追加する
+   * スタンプラリーに参加する
    */
-  async addStampRally({
+  async entryStampRally({
     uid,
     stampRally,
     spots,
   }: {
     uid: string
-    stampRally: PublicStampRally
-    spots: PublicSpot[]
+    stampRally: EntryStampRally
+    spots: EntrySpot[]
   }): Promise<void> {
     // 複数のコレクションを書き込むためトランザクションで処理する
     const batch = this.collectionRef.firestore.batch()
@@ -49,18 +49,20 @@ export class UserRepository {
     const entryStampRallyCollectionRef = this.collectionRef
       .doc(uid)
       .collection(`entryStampRally`)
-      .withConverter(publicStampRallyConverter)
+      .withConverter(entryStampRallyConverter)
 
     // 参加中スタンプラリーを追加する
     const entryStampRallyDocRef = entryStampRallyCollectionRef.doc()
+    stampRally.createdAt = dayjs().toDate()
     batch.set(entryStampRallyDocRef, stampRally)
 
     // 参加中スポットリストを追加する
     for (const spot of spots) {
       const entrySpotCollectionRef = entryStampRallyCollectionRef
         .doc(entryStampRallyDocRef.id)
-        .collection(`spot`)
-        .withConverter(spotConverter)
+        .collection(`entrySpot`)
+        .withConverter(entrySpotConverter)
+      spot.createdAt = dayjs().toDate()
       batch.set(entrySpotCollectionRef.doc(), spot)
     }
 

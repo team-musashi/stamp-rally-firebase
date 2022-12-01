@@ -1,3 +1,5 @@
+import { EntrySpot } from './../../firestore-collection/entry-stamp-rally/entity/entrySpot'
+import { EntryStampRally } from './../../firestore-collection/entry-stamp-rally/entity/entryStampRally'
 import { commandConverter } from './../../firestore-collection/command/commandConverter'
 import { constants } from '../../config/constants'
 import 'reflect-metadata'
@@ -51,22 +53,28 @@ const entryStampRally = async (command: Command) => {
 
   // 公開スタンプラリーとスポットリストを取得する
   const publicStampRallyRepository = container.get<PublicStampRallyRepository>(providers.publicStampRallyRepository)
-  const stampRally = await publicStampRallyRepository.get({ id: stampRallyId })
-  if (!stampRally) {
+  const publicStampRally = await publicStampRallyRepository.get({ id: stampRallyId })
+  if (!publicStampRally) {
     functions.logger.error(`公開スタンプラリーが見つかりません: id = ${stampRallyId}`)
     return
   }
-  const spots = await publicStampRallyRepository.getSpots({ id: stampRallyId })
-  if (spots.length == 0) {
+  const publicSpots = await publicStampRallyRepository.getSpots({ id: stampRallyId })
+  if (publicSpots.length == 0) {
     functions.logger.warn(`スポットが0件です: id = ${stampRallyId}`)
   }
 
+  // 公開スタンプラリーから参加スタンプラリーに変換する
+  const entryStampRally = EntryStampRally.fromPublicStampRally(publicStampRally)
+  const entrySpots = publicSpots.map((publicSpot) => {
+    return EntrySpot.fromPublicSpot(publicSpot)
+  })
+
   // スタンプラリーとスポットリストをユーザー配下に追加する
   const userRepository = container.get<UserRepository>(providers.userRepository)
-  await userRepository.addStampRally({
+  await userRepository.entryStampRally({
     uid: command.uid,
-    stampRally: stampRally,
-    spots: spots,
+    stampRally: entryStampRally,
+    spots: entrySpots,
   })
   functions.logger.info(
     `スタンプラリーとスポットリストをユーザー配下に追加しました: uid = ${command.uid}, stampRallyId = ${stampRallyId}`
