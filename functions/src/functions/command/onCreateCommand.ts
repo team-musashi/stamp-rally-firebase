@@ -17,6 +17,10 @@ export const onCreateCommand = functions
   .firestore.document(`/command/{id}`)
   .onCreate(async (snapshot) => {
     const command = commandConverter.fromFirestore(snapshot)
+    functions.logger.info(`id = ${command.id}`)
+    functions.logger.info(`uid = ${command.uid}`)
+    functions.logger.info(`commandType = ${command.commandType}`)
+    functions.logger.info(command.data)
 
     // コマンドとしてデータ不正なら処理終了
     if (!command.uid || !command.commandType || !command.createdAt) {
@@ -51,25 +55,26 @@ const entryStampRally = async (command: Command) => {
     return
   }
 
-  // 公開スタンプラリーとスポットリストを取得する
+  functions.logger.info(`公開スタンプラリーを取得する: publicStampRallyId = ${stampRallyId}`)
   const publicStampRallyRepository = container.get<PublicStampRallyRepository>(providers.publicStampRallyRepository)
   const publicStampRally = await publicStampRallyRepository.get({ id: stampRallyId })
   if (!publicStampRally) {
-    functions.logger.error(`公開スタンプラリーが見つかりません: id = ${stampRallyId}`)
+    functions.logger.error(`公開スタンプラリーが見つかりません: publicStampRallyId = ${stampRallyId}`)
     return
   }
+  functions.logger.info(`公開スポットリストを取得する: publicStampRallyId = ${stampRallyId}`)
   const publicSpots = await publicStampRallyRepository.getSpots({ id: stampRallyId })
   if (publicSpots.length == 0) {
-    functions.logger.warn(`スポットが0件です: id = ${stampRallyId}`)
+    functions.logger.warn(`スポットが0件です: publicStampRallyId = ${stampRallyId}`)
   }
 
-  // 公開スタンプラリーから参加スタンプラリーに変換する
+  functions.logger.info(`公開スタンプラリーから参加スタンプラリーに変換する`)
   const entryStampRally = EntryStampRally.fromPublicStampRally(publicStampRally)
   const entrySpots = publicSpots.map((publicSpot) => {
     return EntrySpot.fromPublicSpot(publicSpot)
   })
 
-  // スタンプラリーとスポットリストをユーザー配下に追加する
+  functions.logger.info(`スタンプラリーとスポットリストをユーザー配下に追加する`)
   const userRepository = container.get<UserRepository>(providers.userRepository)
   await userRepository.entryStampRally({
     uid: command.uid,
@@ -77,6 +82,6 @@ const entryStampRally = async (command: Command) => {
     spots: entrySpots,
   })
   functions.logger.info(
-    `スタンプラリーとスポットリストをユーザー配下に追加しました: uid = ${command.uid}, stampRallyId = ${stampRallyId}`
+    `スタンプラリーとスポットリストをユーザー配下に追加しました: uid = ${command.uid}, publicStampRallyId = ${stampRallyId}`
   )
 }
