@@ -29,7 +29,7 @@ service cloud.firestore {
         allow delete: if isOwner(uid);
 
         // 参加中のスタンプラリーのスポット
-        match /spot/{spotId} {
+        match /entrySpot/{spotId} {
           // ログインユーザ = 自分自身なら参加中のスタンプラリーのスポットを取得
           allow get: if isOwner(uid);
           allow list: if isOwner(uid);
@@ -53,7 +53,7 @@ service cloud.firestore {
       allow delete: if false;
 
       // 公開中スタンプラリーのスポット
-      match /spot/{spotId} {
+      match /publicSpot/{spotId} {
         allow get: if hasAuth();
         allow list: if hasAuth();
 
@@ -62,6 +62,17 @@ service cloud.firestore {
         allow update: if false;
         allow delete: if false;
       }
+    }
+
+    // コマンド
+    match /command/{commandId} {
+      // 取得できるのはFunctions内でのみ
+      allow get: if false;
+      allow list: if false;
+
+      allow create: if isOwner(request.resource.data.uid);
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }
