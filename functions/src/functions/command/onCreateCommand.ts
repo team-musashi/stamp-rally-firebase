@@ -31,7 +31,7 @@ export const onCreateCommand = functions
     // コマンドタイプによって処理を振り分ける
     switch (command.commandType) {
       case `entryStampRally`:
-        entryStampRally(command)
+        await entryStampRally(command)
         break
 
       default:
