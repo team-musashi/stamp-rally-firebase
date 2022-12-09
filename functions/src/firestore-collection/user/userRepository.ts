@@ -53,6 +53,7 @@ export class UserRepository {
 
     // 参加中スタンプラリーを追加する
     const entryStampRallyDocRef = entryStampRallyCollectionRef.doc()
+    stampRally.status = `entry`
     stampRally.createdAt = dayjs().toDate()
     batch.set(entryStampRallyDocRef, stampRally)
 
