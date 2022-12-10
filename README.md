@@ -13,6 +13,16 @@ Functions で TypeScript を実装するときは、次の VSCode 拡張機能�
 
 - Prettier - Code formatter
 
+## git clone や git pullしたときに気をつけること
+`package.json`が更新されていた場合はfunctionsディレクトリ内で次のコマンドを実行して、ローカルに反映させます。
+
+```
+npm install
+```
+
+これをしないと、`package.json`の更新が各ファイルに反映されず、importエラーになってしまいます。
+
+
 ## Firestore セキュリティルールを修正する
 
 `firestore.rules` を修正してコミットしてください。
