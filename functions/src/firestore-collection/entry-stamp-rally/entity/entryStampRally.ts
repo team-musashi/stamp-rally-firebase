@@ -9,6 +9,12 @@ export class EntryStampRally extends PublicStampRally {
    */
   publicStampRallyId?: string
 
+
+  /**
+   * 参加ステータス
+   */
+  status?: EntryStatus
+
   /**
    * コンストラクタ
    */
@@ -26,3 +32,5 @@ export class EntryStampRally extends PublicStampRally {
     return instance
   }
 }
+
+export type EntryStatus = `entry` | `complete` | `withdrawal`
