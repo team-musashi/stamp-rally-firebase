@@ -7,8 +7,8 @@ export const entryStampRallyConverter: FirestoreDataConverter<EntryStampRally> =
     return {
       id: snapshot.id,
       title: data.title,
-      explanation: data.explanation,
-      place: data.place,
+      summary: data.summary,
+      area: data.area,
       requiredTime: data.requiredTime,
       imageUrl: data.imageUrl,
       startDate: data.startDate,
@@ -22,8 +22,8 @@ export const entryStampRallyConverter: FirestoreDataConverter<EntryStampRally> =
   toFirestore(stampRally: EntryStampRally): FirebaseFirestore.DocumentData {
     return {
       title: stampRally.title,
-      explanation: stampRally.explanation,
-      place: stampRally.place,
+      summary: stampRally.summary,
+      area: stampRally.area,
       requiredTime: stampRally.requiredTime,
       imageUrl: stampRally.imageUrl,
       startDate: stampRally.startDate,
