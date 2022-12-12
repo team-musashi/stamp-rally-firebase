@@ -13,6 +13,11 @@ export class PublicSpot {
   order?: number
 
   /**
+   * スポット名称
+   */
+  title?: string
+
+  /**
    * スポットの概要
    */
   summary?: string

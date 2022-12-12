@@ -7,6 +7,7 @@ export const entrySpotConverter: FirestoreDataConverter<EntrySpot> = {
     return {
       id: snapshot.id,
       order: data.order,
+      title: data.title,
       summary: data.summary,
       address: data.address,
       tel: data.tel,
@@ -21,6 +22,7 @@ export const entrySpotConverter: FirestoreDataConverter<EntrySpot> = {
   toFirestore(spot: EntrySpot): FirebaseFirestore.DocumentData {
     return {
       order: spot.order,
+      title: spot.title,
       summary: spot.summary,
       address: spot.address,
       tel: spot.tel,
