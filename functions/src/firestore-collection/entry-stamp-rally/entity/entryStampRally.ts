@@ -9,7 +9,6 @@ export class EntryStampRally extends PublicStampRally {
    */
   publicStampRallyId?: string
 
-
   /**
    * 参加ステータス
    */

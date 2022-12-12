@@ -6,8 +6,12 @@ export const publicSpotConverter: FirestoreDataConverter<PublicSpot> = {
     const data = snapshot.data()
     return {
       id: snapshot.id,
-      imageUrl: data.imageUrl,
       order: data.order,
+      title: data.title,
+      summary: data.summary,
+      address: data.address,
+      tel: data.tel,
+      imageUrl: data.imageUrl,
       location: data.location,
       createdAt: data.createdAt?.toDate(),
       updatedAt: data.updatedAt?.toDate(),
@@ -15,8 +19,12 @@ export const publicSpotConverter: FirestoreDataConverter<PublicSpot> = {
   },
   toFirestore(spot: PublicSpot): FirebaseFirestore.DocumentData {
     return {
-      imageUrl: spot.imageUrl,
       order: spot.order,
+      title: spot.title,
+      summary: spot.summary,
+      address: spot.address,
+      tel: spot.tel,
+      imageUrl: spot.imageUrl,
       location: spot.location,
       createdAt: spot.createdAt ? FieldValue.serverTimestamp() : undefined,
       updatedAt: FieldValue.serverTimestamp(),

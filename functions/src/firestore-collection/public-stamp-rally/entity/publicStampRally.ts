@@ -13,14 +13,14 @@ export class PublicStampRally {
   title?: string
 
   /**
-   * スタンプラリーの詳細説明
+   * スタンプラリーの概要
    */
-  explanation?: string
+  summary?: string
 
   /**
-   * 開催場所
+   * エリア
    */
-  place?: string
+  area?: string
 
   /**
    * 所要時間
