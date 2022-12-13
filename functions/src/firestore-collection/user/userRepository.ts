@@ -70,4 +70,17 @@ export class UserRepository {
     // コミット
     await batch.commit()
   }
+
+  /**
+   * 参加中スタンプラリーを完了する
+   */
+  async completeStampRally({ uid, entryStampId }: { uid: string; entryStampId: string }): Promise<void> {
+    // 参加中スタンプラリーのDoc参照を取得する
+    const entryStampRallyDocRef = this.collectionRef.doc(uid).collection(`entryStampRally`).doc(entryStampId)
+
+    entryStampRallyDocRef.update({
+      status: `complete`,
+      updatedAt: dayjs().toDate(),
+    })
+  }
 }
