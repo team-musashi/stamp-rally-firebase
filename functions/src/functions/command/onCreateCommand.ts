@@ -38,6 +38,10 @@ export const onCreateCommand = functions
         await completeStampRally(command)
         break
 
+      case `withdrawalStampRally`:
+        await withdrawalStampRally(command)
+        break
+
       default:
         functions.logger.error(`不正なコマンドタイプです: commandType = ${command.commandType}`)
         break
@@ -112,4 +116,28 @@ const completeStampRally = async (command: Command) => {
     entryStampId: stampRallyId,
   })
   functions.logger.info(`参加中スタンプラリーを完了ステータスに変換しました`)
+}
+
+/**
+ * 参加中スタンプラリーを中断する
+ */
+const withdrawalStampRally = async (command: Command) => {
+  if (!command.uid) {
+    functions.logger.error(`ユーザーIDがありません`)
+    return
+  }
+
+  const stampRallyId = command.data?.get(`stampRallyId`) as string
+  if (!stampRallyId) {
+    functions.logger.error(`スタンプラリーIDがありません`)
+    return
+  }
+
+  functions.logger.info(`参加中スタンプラリーを中断ステータスに変換する`)
+  const userRepository = container.get<UserRepository>(providers.userRepository)
+  await userRepository.withdrawalStampRally({
+    uid: command.uid,
+    entryStampId: stampRallyId,
+  })
+  functions.logger.info(`参加中スタンプラリーを中断ステータスに変換しました`)
 }
