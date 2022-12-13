@@ -78,7 +78,7 @@ export class UserRepository {
     // 参加中スタンプラリーのDoc参照を取得する
     const entryStampRallyDocRef = this.collectionRef.doc(uid).collection(`entryStampRally`).doc(entryStampId)
 
-    entryStampRallyDocRef.update({
+    await entryStampRallyDocRef.update({
       status: `complete`,
       updatedAt: dayjs().toDate(),
     })
@@ -91,7 +91,7 @@ export class UserRepository {
     // 参加中スタンプラリーのDoc参照を取得する
     const entryStampRallyDocRef = this.collectionRef.doc(uid).collection(`entryStampRally`).doc(entryStampId)
 
-    entryStampRallyDocRef.update({
+    await entryStampRallyDocRef.update({
       status: `withdrawal`,
       updatedAt: dayjs().toDate(),
     })
