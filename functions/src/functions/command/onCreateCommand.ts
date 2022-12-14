@@ -38,8 +38,8 @@ export const onCreateCommand = functions
         await completeStampRally(command)
         break
 
-      case `withdrawalStampRally`:
-        await withdrawalStampRally(command)
+      case `withdrawStampRally`:
+        await withdrawStampRally(command)
         break
 
       default:
@@ -121,7 +121,7 @@ const completeStampRally = async (command: Command) => {
 /**
  * 参加中スタンプラリーを中断する
  */
-const withdrawalStampRally = async (command: Command) => {
+const withdrawStampRally = async (command: Command) => {
   if (!command.uid) {
     functions.logger.error(`ユーザーIDがありません`)
     return
@@ -135,7 +135,7 @@ const withdrawalStampRally = async (command: Command) => {
 
   functions.logger.info(`参加中スタンプラリーを中断ステータスに変換する`)
   const userRepository = container.get<UserRepository>(providers.userRepository)
-  await userRepository.withdrawalStampRally({
+  await userRepository.withdrawStampRally({
     uid: command.uid,
     entryStampId: stampRallyId,
   })

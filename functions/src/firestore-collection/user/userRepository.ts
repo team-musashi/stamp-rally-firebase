@@ -87,7 +87,7 @@ export class UserRepository {
   /**
    * 参加中スタンプラリーを中断する
    */
-  async withdrawalStampRally({ uid, entryStampId }: { uid: string; entryStampId: string }): Promise<void> {
+  async withdrawStampRally({ uid, entryStampId }: { uid: string; entryStampId: string }): Promise<void> {
     // 参加中スタンプラリーのDoc参照を取得する
     const entryStampRallyDocRef = this.collectionRef.doc(uid).collection(`entryStampRally`).doc(entryStampId)
 

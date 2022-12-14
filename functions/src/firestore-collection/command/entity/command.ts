@@ -43,4 +43,4 @@ export class Command {
 /**
  * コマンドタイプ
  */
-export type CommandType = `entryStampRally` | `completeStampRally` | `withdrawalStampRally`
+export type CommandType = `entryStampRally` | `completeStampRally` | `withdrawStampRally`
