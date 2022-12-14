@@ -33,7 +33,7 @@ export class UserRepository {
   /**
    * スタンプラリーに参加する
    */
-  async entryStampRally({
+  async enterStampRally({
     uid,
     stampRally,
     spots,
@@ -69,5 +69,31 @@ export class UserRepository {
 
     // コミット
     await batch.commit()
+  }
+
+  /**
+   * 参加中スタンプラリーを完了する
+   */
+  async completeStampRally({ uid, entryStampId }: { uid: string; entryStampId: string }): Promise<void> {
+    // 参加中スタンプラリーのDoc参照を取得する
+    const entryStampRallyDocRef = this.collectionRef.doc(uid).collection(`entryStampRally`).doc(entryStampId)
+
+    await entryStampRallyDocRef.update({
+      status: `complete`,
+      updatedAt: dayjs().toDate(),
+    })
+  }
+
+  /**
+   * 参加中スタンプラリーを中断する
+   */
+  async withdrawStampRally({ uid, entryStampId }: { uid: string; entryStampId: string }): Promise<void> {
+    // 参加中スタンプラリーのDoc参照を取得する
+    const entryStampRallyDocRef = this.collectionRef.doc(uid).collection(`entryStampRally`).doc(entryStampId)
+
+    await entryStampRallyDocRef.update({
+      status: `withdrawal`,
+      updatedAt: dayjs().toDate(),
+    })
   }
 }
