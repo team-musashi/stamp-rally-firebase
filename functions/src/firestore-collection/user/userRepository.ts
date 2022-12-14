@@ -33,7 +33,7 @@ export class UserRepository {
   /**
    * スタンプラリーに参加する
    */
-  async entryStampRally({
+  async enterStampRally({
     uid,
     stampRally,
     spots,

@@ -30,8 +30,8 @@ export const onCreateCommand = functions
 
     // コマンドタイプによって処理を振り分ける
     switch (command.commandType) {
-      case `entryStampRally`:
-        await entryStampRally(command)
+      case `enterStampRally`:
+        await enterStampRally(command)
         break
 
       case `completeStampRally`:
@@ -51,7 +51,7 @@ export const onCreateCommand = functions
 /**
  * スタンプラリーに参加する
  */
-const entryStampRally = async (command: Command) => {
+const enterStampRally = async (command: Command) => {
   if (!command.uid) {
     functions.logger.error(`ユーザーIDがありません`)
     return
@@ -84,7 +84,7 @@ const entryStampRally = async (command: Command) => {
 
   functions.logger.info(`スタンプラリーとスポットリストをユーザー配下に追加する`)
   const userRepository = container.get<UserRepository>(providers.userRepository)
-  await userRepository.entryStampRally({
+  await userRepository.enterStampRally({
     uid: command.uid,
     stampRally: entryStampRally,
     spots: entrySpots,
