@@ -130,7 +130,7 @@ jobs:
     needs:
       - changes
       - deploy_storage
-    if: ${{ !cancelled() && needs.changes.outputs.storage == 'true' }}
+    if: ${{ !cancelled() && (needs.changes.outputs.storage == 'true' || github.ref_name == 'main') }}
     runs-on: ubuntu-latest
     env:
       SLACK_USERNAME: Firebase Storage
@@ -175,7 +175,7 @@ jobs:
     needs:
       - changes
       - deploy_firestore
-    if: ${{ !cancelled() && needs.changes.outputs.firestore == 'true' }}
+    if: ${{ !cancelled() && (needs.changes.outputs.firestore == 'true' || github.ref_name == 'main') }}
     runs-on: ubuntu-latest
     env:
       SLACK_USERNAME: Firebase Firestore
@@ -220,7 +220,7 @@ jobs:
     needs:
       - changes
       - deploy_functions
-    if: ${{ !cancelled() && needs.changes.outputs.functions == 'true' }}
+    if: ${{ !cancelled() && (needs.changes.outputs.functions == 'true' || github.ref_name == 'main') }}
     runs-on: ubuntu-latest
     env:
       SLACK_USERNAME: Firebase Functions
