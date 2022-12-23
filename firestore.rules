@@ -1,8 +1,78 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if false;
+
+    function hasAuth() {
+      return request.auth.uid != null;
+    }
+
+    function isOwner(uid) {
+      return hasAuth() && request.auth.uid == uid;
+    }
+
+    match /user/{uid} {
+      allow get: if isOwner(uid);
+      allow list: if false;
+      allow create: if false;
+      allow update: if isOwner(uid);
+      allow delete: if false;
+
+      // 参加中スタンプラリー
+      match /entryStampRally/{entryStampRallyId} {
+        // ログインユーザ = 自分自身なら参加中のスタンプラリーを取得
+        allow get: if isOwner(uid);
+        allow list: if isOwner(uid);
+
+        // ログインユーザ = 自分自身なら参加中スタンプラリーを作成/更新/削除してよい
+        allow create: if isOwner(uid);
+        allow update: if isOwner(uid);
+        allow delete: if isOwner(uid);
+
+        // 参加中のスタンプラリーのスポット
+        match /entrySpot/{spotId} {
+          // ログインユーザ = 自分自身なら参加中のスタンプラリーのスポットを取得
+          allow get: if isOwner(uid);
+          allow list: if isOwner(uid);
+
+          // ログインユーザ = 自分自身なら参加中スタンプラリーのスポットを更新（スタンプを取得した時間を入れるイメージ）
+          allow create: if false;
+          allow update: if isOwner(uid);
+          allow delete: if false;
+        }
+      }
+    }
+
+    // 公開中スタンプラリー
+    match /publicStampRally/{publicStampRallyId} {
+      allow get: if hasAuth();
+      allow list: if hasAuth();
+      
+      // 作成できるのは運営のみ
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+
+      // 公開中スタンプラリーのスポット
+      match /publicSpot/{spotId} {
+        allow get: if hasAuth();
+        allow list: if hasAuth();
+
+        // 作成できるのは運営のみ
+        allow create: if false;
+        allow update: if false;
+        allow delete: if false;
+      }
+    }
+
+    // コマンド
+    match /command/{commandId} {
+      // 取得できるのはFunctions内でのみ
+      allow get: if false;
+      allow list: if false;
+
+      allow create: if isOwner(request.resource.data.uid);
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }
