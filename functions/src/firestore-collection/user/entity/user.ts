@@ -8,11 +8,6 @@ export class User {
   uid = ``
 
   /**
-   * ユーザーの地域
-   */
-  region = ``
-
-  /**
    * 認証プロバイダー
    */
   authProvider?: AuthProvider
