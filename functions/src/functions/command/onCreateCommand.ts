@@ -30,8 +30,16 @@ export const onCreateCommand = functions
 
     // コマンドタイプによって処理を振り分ける
     switch (command.commandType) {
-      case `entryStampRally`:
-        await entryStampRally(command)
+      case `enterStampRally`:
+        await enterStampRally(command)
+        break
+
+      case `completeStampRally`:
+        await completeStampRally(command)
+        break
+
+      case `withdrawStampRally`:
+        await withdrawStampRally(command)
         break
 
       default:
@@ -43,7 +51,7 @@ export const onCreateCommand = functions
 /**
  * スタンプラリーに参加する
  */
-const entryStampRally = async (command: Command) => {
+const enterStampRally = async (command: Command) => {
   if (!command.uid) {
     functions.logger.error(`ユーザーIDがありません`)
     return
@@ -76,7 +84,7 @@ const entryStampRally = async (command: Command) => {
 
   functions.logger.info(`スタンプラリーとスポットリストをユーザー配下に追加する`)
   const userRepository = container.get<UserRepository>(providers.userRepository)
-  await userRepository.entryStampRally({
+  await userRepository.enterStampRally({
     uid: command.uid,
     stampRally: entryStampRally,
     spots: entrySpots,
@@ -84,4 +92,52 @@ const entryStampRally = async (command: Command) => {
   functions.logger.info(
     `スタンプラリーとスポットリストをユーザー配下に追加しました: uid = ${command.uid}, publicStampRallyId = ${stampRallyId}`
   )
+}
+
+/**
+ * 参加中スタンプラリーを完了する
+ */
+const completeStampRally = async (command: Command) => {
+  if (!command.uid) {
+    functions.logger.error(`ユーザーIDがありません`)
+    return
+  }
+
+  const stampRallyId = command.data?.get(`stampRallyId`) as string
+  if (!stampRallyId) {
+    functions.logger.error(`スタンプラリーIDがありません`)
+    return
+  }
+
+  functions.logger.info(`参加中スタンプラリーを完了ステータスに変換する`)
+  const userRepository = container.get<UserRepository>(providers.userRepository)
+  await userRepository.completeStampRally({
+    uid: command.uid,
+    entryStampId: stampRallyId,
+  })
+  functions.logger.info(`参加中スタンプラリーを完了ステータスに変換しました`)
+}
+
+/**
+ * 参加中スタンプラリーを中断する
+ */
+const withdrawStampRally = async (command: Command) => {
+  if (!command.uid) {
+    functions.logger.error(`ユーザーIDがありません`)
+    return
+  }
+
+  const stampRallyId = command.data?.get(`stampRallyId`) as string
+  if (!stampRallyId) {
+    functions.logger.error(`スタンプラリーIDがありません`)
+    return
+  }
+
+  functions.logger.info(`参加中スタンプラリーを中断ステータスに変換する`)
+  const userRepository = container.get<UserRepository>(providers.userRepository)
+  await userRepository.withdrawStampRally({
+    uid: command.uid,
+    entryStampId: stampRallyId,
+  })
+  functions.logger.info(`参加中スタンプラリーを中断ステータスに変換しました`)
 }
