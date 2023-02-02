@@ -55,9 +55,9 @@ https://firebase.google.com/docs/functions/config-env#managing_secrets
 
 ### 管理している秘匿情報
 
-| キー名   | 内容     |
-| -------- | -------- |
-| まだない | まだない |
+| キー名             | 内容                                                     |
+| ------------------ | -------------------------------------------------------- |
+| GOOGLE_MAP_API_KEY | GoogleMapsAPI（Directions API）を使用するための API キー |
 
 ## フォルダ構成
 
