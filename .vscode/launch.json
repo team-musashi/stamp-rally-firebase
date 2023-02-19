@@ -9,7 +9,8 @@
       "type": "node",
       "request": "attach",
       "restart": true,
-      "port": 9229
+      "port": 9229,
+      "processId": "${command:PickProcess}",
     }
   ]
 }
