@@ -11,6 +11,7 @@
       "restart": true,
       "port": 9229,
       "processId": "${command:PickProcess}",
+      "preLaunchTask": "npm: build - functions"
     }
   ]
 }
