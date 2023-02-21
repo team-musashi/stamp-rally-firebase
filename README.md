@@ -18,10 +18,19 @@ Functions で TypeScript を実装するときは、次の VSCode 拡張機能�
 `package.json`が更新されていた場合は functions ディレクトリ内で次のコマンドを実行して、ローカルに反映させます。
 
 ```
-cd functions ; npm install
+cd functions
+npm install
 ```
 
 これをしないと、`package.json`の更新が各ファイルに反映されず、import エラーになってしまいます。
+
+## google map api 関連
+
+```
+npm install @googlemaps/google-maps-services-js
+npm install @google/maps
+npm i --save-dev @types/google__maps
+```
 
 ## Firestore セキュリティルールを修正する
 
