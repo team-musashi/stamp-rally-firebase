@@ -190,21 +190,52 @@ const calculateRoute = async (command: Command) => {
 
   // 該当スタンプラリー中の全スポット間の経路を求める
   let stampRallyRoute: GeoPoint[] = []
-  for (let i = 0; i < publicSpots.length - 1; i++) {
-    if (publicSpots[i].location == null || publicSpots[i + 1].location == null) {
+  for await (const [i, spot] of publicSpots.entries()) {
+    if (i == publicSpots.length - 1) {
+      break
+    }
+    if (!publicSpots[i].location || !publicSpots[i + 1].location) {
       continue
     }
+
+    // 経路算出開始スポットの座標
     const from: LatLng = {
-      latitude: (publicSpots[i].location! as any as GeoPoint).latitude,
-      longitude: (publicSpots[i].location! as any as GeoPoint).longitude,
+      latitude: (spot.location! as any as GeoPoint).latitude,
+      longitude: (spot.location! as any as GeoPoint).longitude,
     }
+
+    // 経路算出終了スポットの座標
     const to: LatLng = {
       latitude: (publicSpots[i + 1].location! as any as GeoPoint).latitude,
       longitude: (publicSpots[i + 1].location! as any as GeoPoint).longitude,
     }
 
+    // Directions APIを使用して2点間の経路を算出
+    //
+    const steps = await getDirections(mapClient, from, to)
+    for (let i = 0; i < steps.length; i++) {
+      if (i == 0) {
+        // 1つ目のみ開始位置、終了位置の両方を取り出す
+        stampRallyRoute.push(new GeoPoint(steps[i].start_location.lat, steps[i].start_location.lng))
+      }
+      // 2回目以降は終了位置のみ取り出す（1つ目の終了位置 = 2つ目の開始位置、2つ目の終了位置 = 3つ目の開始位置 となるため）
+      stampRallyRoute.push(new GeoPoint(steps[i].end_location.lat, steps[i].end_location.lng))
+    }
+  }
+  functions.logger.info(`スタンプラリースポットの経路算出が完了しました`)
+  functions.logger.info(stampRallyRoute)
+}
+
+/// Google Maps API の Directions API（経路算出）を呼び出す
+/// param: 1. GoogleMapsAPIを叩くためのサービス, 2. 開始経路, 3.終了経路
+async function getDirections(
+  mapClient: googleMaps.GoogleMapsClient,
+  from: LatLng,
+  to: LatLng
+): Promise<googleMaps.DirectionsStep[]> {
+  return new Promise<googleMaps.DirectionsStep[]>((resolve, reject) => {
     // 経路算出（Directions）API呼び出し
-    // 徒歩モードで算出する
+    // 徒歩モードで算出
     mapClient.directions(
       {
         origin: from,
@@ -216,38 +247,14 @@ const calculateRoute = async (command: Command) => {
         // コールバック処理にてAPIレスポンスを受け取る
         if (error) {
           // APIレスポンスを受け取れなかった
-          functions.logger.error(error)
+          reject(error)
         } else {
           // APIレスポンスを受け取った
-          // json.stepsタグ中に2点間の開始位置、終了位置を保持している
-          if (
-            response.json.routes.length == 0 ||
-            response.json.routes[0].legs.length == 0 ||
-            response.json.routes[0].legs[0].steps.length == 0
-          ) {
-            // stepsタグまで辿り着けないようであれば処理終了
-            return
-          }
-
-          // stepsタグの中には2点間の経路を表現するために直線の情報をいくつも保持している
-          //  → いくつもの直線情報から、2点間の経路を表現するための曲線を表現するイメージ
-          const steps = response.json.routes[0].legs[0].steps
-          for (let i = 0; i < steps.length; i++) {
-            // 1つ目のみ開始位置、終了位置の両方を取り出す
-            if (i == 0) {
-              stampRallyRoute.push(new GeoPoint(steps[i].start_location.lat, steps[i].start_location.lng))
-            }
-            // 2回目以降は終了位置のみ取り出す（1つ目の終了位置 = 2つ目の開始位置、2つ目の終了位置 = 3つ目の開始位置 となるため）
-            stampRallyRoute.push(new GeoPoint(steps[i].end_location.lat, steps[i].end_location.lng))
-          }
-        }
-
-        // TODO：該当スタンプラリーの最後のスポットまで経路算出が完了したらStampRallyドキュメントを更新
-        if (i == publicSpots.length - 1) {
-          functions.logger.info(`スタンプラリースポットの経路算出が完了しました`)
-          functions.logger.info(stampRallyRoute)
+          // json.stepsタグの中には2点間の経路を表現するために直線の情報をいくつも保持している
+          //  → いくつかある直線情報を元にして、2点間の経路を表現するための曲線を表現するイメージ
+          resolve(response.json.routes[0].legs[0].steps)
         }
       }
     )
-  }
+  })
 }
