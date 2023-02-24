@@ -13,6 +13,7 @@ export const publicStampRallyConverter: FirestoreDataConverter<PublicStampRally>
       imageUrl: data.imageUrl,
       startDate: data.startDate,
       endDate: data.endDate,
+      route: data.route,
       createdAt: data.createdAt?.toDate(),
       updatedAt: data.updatedAt?.toDate(),
     }
@@ -26,6 +27,7 @@ export const publicStampRallyConverter: FirestoreDataConverter<PublicStampRally>
       imageUrl: stampRally.imageUrl,
       startDate: stampRally.startDate,
       endDate: stampRally.endDate,
+      route: stampRally.route,
       createdAt: stampRally.createdAt ? FieldValue.serverTimestamp() : undefined,
       updatedAt: FieldValue.serverTimestamp(),
     }

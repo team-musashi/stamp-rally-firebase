@@ -157,18 +157,21 @@ const withdrawStampRally = async (command: Command) => {
 const calculateRoute = async (command: Command) => {
   // ユーザーIDがなければ処理終了
   if (!command.uid) {
+    functions.logger.error(`ユーザーIDがありません`)
     return
   }
 
   // コマンドからスタンプラリーIDが取得できなければ処理終了
   const stampRallyId = command.data?.get(`stampRallyId`) as string
   if (!stampRallyId) {
+    functions.logger.error(`スタンプラリーIDがありません`)
     return
   }
 
   // SecretManagerからGoogle Map APIのAPIキーが取得できなければ処理終了
   const apiKey = process.env.GOOGLE_MAP_API as string
   if (!apiKey) {
+    functions.logger.error(`Google Map API の API キーがありません`)
     return
   }
 
@@ -176,12 +179,14 @@ const calculateRoute = async (command: Command) => {
   const publicStampRallyRepository = container.get<PublicStampRallyRepository>(providers.publicStampRallyRepository)
   const publicStampRally = await publicStampRallyRepository.get({ id: stampRallyId })
   if (!publicStampRally) {
+    functions.logger.error(`公開スタンプラリーが見つかりません: publicStampRallyId = ${stampRallyId}`)
     return
   }
 
   // 公開スタンプラリー中の公開スポットが取得できなければ処理終了
   const publicSpots = await publicStampRallyRepository.getSpots({ id: stampRallyId })
   if (publicSpots.length == 0) {
+    functions.logger.warn(`スポットが0件です: publicStampRallyId = ${stampRallyId}`)
     return
   }
 
@@ -222,8 +227,11 @@ const calculateRoute = async (command: Command) => {
       stampRallyRoute.push(new GeoPoint(steps[i].end_location.lat, steps[i].end_location.lng))
     }
   }
+
+  // 公開中スタンプラリーの経路情報として更新
+  publicStampRally.route = stampRallyRoute
+  await publicStampRallyRepository.update({ publicStampRally: publicStampRally })
   functions.logger.info(`スタンプラリースポットの経路算出が完了しました`)
-  functions.logger.info(stampRallyRoute)
 }
 
 /// Google Maps API の Directions API（経路算出）を呼び出す

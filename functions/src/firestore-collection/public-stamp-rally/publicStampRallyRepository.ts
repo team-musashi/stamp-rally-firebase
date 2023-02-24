@@ -5,6 +5,7 @@ import { PublicStampRally } from './entity/publicStampRally'
 import { providers } from '../../config/dicon'
 import { PublicSpot } from './entity/publicSpot'
 import { publicSpotConverter } from './publicSpotConverter'
+import dayjs = require('dayjs')
 
 /**
  * 公開スタンプラリーリポジトリ
@@ -25,6 +26,15 @@ export class PublicStampRallyRepository {
   async get({ id }: { id: string }): Promise<PublicStampRally | undefined> {
     const snapshot = await this.collectionRef.doc(id).get()
     return snapshot.data()
+  }
+
+  /**
+   * 公開スタンプラリーを更新する
+   */
+  async update({ publicStampRally }: { publicStampRally: PublicStampRally }): Promise<void> {
+    if (!publicStampRally.id) return
+    publicStampRally.updatedAt = dayjs().toDate()
+    await this.collectionRef.doc(publicStampRally.id!).update(publicStampRally)
   }
 
   /**
