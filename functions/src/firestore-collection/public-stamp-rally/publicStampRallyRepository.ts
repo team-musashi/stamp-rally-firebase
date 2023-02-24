@@ -5,7 +5,7 @@ import { PublicStampRally } from './entity/publicStampRally'
 import { providers } from '../../config/dicon'
 import { PublicSpot } from './entity/publicSpot'
 import { publicSpotConverter } from './publicSpotConverter'
-import dayjs = require('dayjs')
+import * as dayjs from 'dayjs'
 
 /**
  * 公開スタンプラリーリポジトリ

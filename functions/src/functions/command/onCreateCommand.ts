@@ -194,8 +194,8 @@ const calculateRoute = async (command: Command) => {
   const mapClient = googleMaps.createClient({ key: apiKey })
 
   // 該当スタンプラリー中の全スポット間の経路を求める
-  let stampRallyRoute: GeoPoint[] = []
-  for await (const [i, spot] of publicSpots.entries()) {
+  const stampRallyRoute: GeoPoint[] = []
+  for await (const [i, _] of publicSpots.entries()) {
     if (i == publicSpots.length - 1) {
       break
     }
@@ -205,8 +205,8 @@ const calculateRoute = async (command: Command) => {
 
     // 経路算出開始スポットの座標
     const from: LatLng = {
-      latitude: (spot.location! as any as GeoPoint).latitude,
-      longitude: (spot.location! as any as GeoPoint).longitude,
+      latitude: (publicSpots[i].location! as any as GeoPoint).latitude,
+      longitude: (publicSpots[i].location! as any as GeoPoint).longitude,
     }
 
     // 経路算出終了スポットの座標
