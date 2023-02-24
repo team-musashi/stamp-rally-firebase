@@ -1,3 +1,5 @@
+import { GeoPoint } from 'firebase-admin/firestore'
+
 /**
  * 公開スタンプラリー
  */
@@ -41,6 +43,11 @@ export class PublicStampRally {
    * 開催終了日
    */
   endDate?: Date
+
+  /**
+   * 経路
+   */
+  route?: GeoPoint[]
 
   /**
    * 作成日時
