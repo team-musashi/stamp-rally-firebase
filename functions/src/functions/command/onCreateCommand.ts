@@ -169,7 +169,7 @@ const calculateRoute = async (command: Command) => {
   }
 
   // SecretManagerからGoogle Map APIのAPIキーが取得できなければ処理終了
-  const apiKey = process.env.GOOGLE_MAP_API as string
+  const apiKey = process.env.GOOGLE_MAP_API_KEY as string
   if (!apiKey) {
     functions.logger.error(`Google Map API の API キーがありません`)
     return
@@ -251,7 +251,10 @@ async function getDirections(
         mode: TravelMode.walking,
         avoid: [TravelRestriction.highways, TravelRestriction.tolls, TravelRestriction.ferries],
       },
-      (error, response) => {
+      (
+        error: string | googleMaps.ClientResponse<googleMaps.DirectionsResponse>,
+        response: googleMaps.ClientResponse<googleMaps.DirectionsResponse>
+      ) => {
         // コールバック処理にてAPIレスポンスを受け取る
         if (error) {
           // APIレスポンスを受け取れなかった
