@@ -13,7 +13,7 @@
     "paths": {
       "~/*": ["./*"]
     },
-    "types": ["@types/node"],
+    "types": ["@types/node", "@types/googlemaps"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
