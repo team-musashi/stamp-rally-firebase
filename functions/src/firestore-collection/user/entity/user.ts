@@ -8,9 +8,9 @@ export class User {
   uid = ``
 
   /**
-   * ユーザーID
+   * ユーザーの地域
    */
-  region = ``
+  region? = ``
 
   /**
    * 認証プロバイダー

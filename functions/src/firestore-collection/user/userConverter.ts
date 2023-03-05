@@ -6,7 +6,7 @@ export const userConverter: FirestoreDataConverter<User> = {
     const data = snapshot.data()
     return {
       uid: snapshot.id,
-      region: data.region,
+      region: data.region ?? ``,
       authProvider: data.authProvider ?? `anonymous`,
       platform: data.platform,
       createdAt: data.createdAt?.toDate(),
@@ -15,7 +15,7 @@ export const userConverter: FirestoreDataConverter<User> = {
   },
   toFirestore(user: User): FirebaseFirestore.DocumentData {
     return {
-      region: user.region,
+      region: user.region ?? ``,
       authProvider: user.authProvider,
       platform: user.platform,
       createdAt: user.createdAt ? FieldValue.serverTimestamp() : undefined,
