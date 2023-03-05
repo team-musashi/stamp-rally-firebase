@@ -18,10 +18,19 @@ Functions で TypeScript を実装するときは、次の VSCode 拡張機能�
 `package.json`が更新されていた場合は functions ディレクトリ内で次のコマンドを実行して、ローカルに反映させます。
 
 ```
-cd functions ; npm install
+cd functions
+npm install
 ```
 
 これをしないと、`package.json`の更新が各ファイルに反映されず、import エラーになってしまいます。
+
+## google map api 関連
+
+```
+npm install @googlemaps/google-maps-services-js
+npm install @google/maps
+npm i --save-dev @types/google__maps
+```
 
 ## Firestore セキュリティルールを修正する
 
@@ -55,9 +64,31 @@ https://firebase.google.com/docs/functions/config-env#managing_secrets
 
 ### 管理している秘匿情報
 
-| キー名   | 内容     |
-| -------- | -------- |
-| まだない | まだない |
+| キー名             | 内容                                                     |
+| ------------------ | -------------------------------------------------------- |
+| GOOGLE_MAP_API_KEY | GoogleMapsAPI（Directions API）を使用するための API キー |
+
+### デプロイ前の Functions をローカルでデバッグする方法
+
+Firebase エミュレータ.Firestore を使用することにより、ローカル開発環境でブレークポイントを設置することができます。
+
+#### 手順
+
+1. 次のコマンドを `プロジェクトフォルダ/functions` で実行します。
+
+```
+firebase emulators:start --inspect-functions --import=../dump
+```
+
+2. 各 Firebase エミュレータサービスの中から `Firestore` を選択してエミュレータを起動します。
+3. VS Code の `実行とデバッグタブ` で `functions` を選択して実行ボタンを押下します。（エミュレータのプロセスを選択すること）
+   <img width="610" alt="スクリーンショット 2023-02-20 19 49 08" src="https://user-images.githubusercontent.com/39579511/220085214-7f645751-e248-48a4-9ec9-94f508b1fd71.png">
+
+#### 補足
+
+- dump ファイルを利用して Firebase エミュレータのデータ永続化を行っています。
+- `firebase emulators:start`コマンドで、 `--import=../dump` オプションを指定することで、dump フォルダ内のデータを元にエミュレータを起動します。
+- また、Firebase エミュレータ起動中に `firebase emulators:export dump` コマンドを実行することで、コマンド実行時点の内容を dump ファイルに書き込むことができます。
 
 ## フォルダ構成
 
